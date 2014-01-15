@@ -1,5 +1,7 @@
 KadOHui = (typeof KadOHui !== 'undefined') ? KadOHui : {};
 
+var emiterBuilder = require('events');
+
 KadOHui.Control = function(node) {
 	this.node = node;
 	this.control = $("#control");
@@ -30,7 +32,7 @@ KadOHui.Control = function(node) {
 KadOHui.Control.prototype = {
 	initExecutor : function() {
 		var prepare = function(data) {
-			var table = "<table>";
+			var table = "";
 			if (data[0] !== undefined) {
 				table = table + "<tr>";
 				for ( var key in data[0]) {
@@ -50,35 +52,63 @@ KadOHui.Control.prototype = {
 				}
 				table = table + "</tr>";
 			});
-			table = table + "</table>";
-
 			return table;
 		};
 
 		var that = this;
 		var tbody = this.putResult.find('tbody');
 		var onExecute = function() {
+			var today = new Date().getTime();
+			var emiter = new emiterBuilder.EventEmitter();
+
 			that.putBtn.unbind('click', onExecute).button('toggle');
 			var namespace = that.putNamespace.val();
 			var key = that.putKey.val();
 			var sql = that.sqlCode.val();
-			that.query.executeSQL(sql, function(err, response) {
-				var text = "<td><tr> No matching data</tr></td>";
-				if (err) {
-					text = "Failed due to: " + err;
-				} else {
-					if (response instanceof Array) {
-						if (response.length !== 0) {
-							text = prepare(response);
-						} else {
-							text = "No matching data";
-						}
-					} else {
-						text = "Executed, response: " + response;
-					}
-				}
-				tbody.append("<tr><td>Query response: </td></tr><tr><td>" + text + "</td></tr>");
+			
+			var success = function(success) {
+				// TODO make it work for success
+				tbody.append("<tr><td>Query " + today + " response: </td><td>" + success + "</td></tr>");
+			};
+			
+			emiter.on("data", function(data) {
+				// TODO Make it work for data
+				tbody.append("<tr><td>Query " + today + " response: </td></tr>" + prepare(data));
 			});
+			
+			emiter.on("end", function() {
+				tbody.append("<tr><td>Query " + today + " response: </td><td>Finished</td></tr>");
+			});
+			
+			emiter.on("err", function(err) {
+				// TODO make it work for err
+				tbody.append("<tr><td>Query " + today + " response: </td><td>" + err + "</td></tr>");
+			});
+			
+			emiter.on("success", success);
+
+			tbody.append("<tr><td>Executing Query " + today + "</td></tr>");
+
+			that.query.executeSQL(sql, emiter);
+
+			// function(err, response) {
+			// var text = "<td><tr> No matching data</tr></td>";
+			// if (err) {
+			// text = "Failed due to: " + err;
+			// } else {
+			// if (response instanceof Array) {
+			// if (response.length !== 0) {
+			// text = prepare(response);
+			// } else {
+			// text = "No matching data";
+			// }
+			// } else {
+			// text = "Executed, response: " + response;
+			// }
+			// }
+			// tbody.append("<tr><td>Query response: </td></tr><tr><td>" + text
+			// + "</td></tr>");
+			// }
 			that.putBtn.click(onExecute).button('toggle');
 		};
 		this.putBtn.click(onExecute);
@@ -89,7 +119,7 @@ KadOHui.Control.prototype = {
 		var statisticHolder = this.query.statisticHolder;
 		var statbody = this.statResult.find('statbody');
 		var update = function() {
-			//statbody.remove(statbody.selector);
+			// statbody.remove(statbody.selector);
 			var text = "<p>Running: " + statisticHolder.numberOfQueries + " Avr. Performance: "
 					+ statisticHolder.averageRunningTime() + "</p>";
 			statbody.append(text);
