@@ -65,50 +65,31 @@ KadOHui.Control.prototype = {
 			var namespace = that.putNamespace.val();
 			var key = that.putKey.val();
 			var sql = that.sqlCode.val();
-			
+
 			var success = function(success) {
 				// TODO make it work for success
 				tbody.append("<tr><td>Query " + today + " response: </td><td>" + success + "</td></tr>");
 			};
-			
-			emiter.on("data", function(data) {
+
+			emiter.on("DATA", function(data) {
 				// TODO Make it work for data
 				tbody.append("<tr><td>Query " + today + " response: </td></tr>" + prepare(data));
 			});
-			
-			emiter.on("end", function() {
+
+			emiter.on("FINISHED", function() {
 				tbody.append("<tr><td>Query " + today + " response: </td><td>Finished</td></tr>");
 			});
-			
-			emiter.on("err", function(err) {
+
+			emiter.on("ERROR", function(err) {
 				// TODO make it work for err
 				tbody.append("<tr><td>Query " + today + " response: </td><td>" + err + "</td></tr>");
 			});
-			
-			emiter.on("success", success);
+
+			emiter.on("SUCCESS", success);
 
 			tbody.append("<tr><td>Executing Query " + today + "</td></tr>");
 
 			that.query.executeSQL(sql, emiter);
-
-			// function(err, response) {
-			// var text = "<td><tr> No matching data</tr></td>";
-			// if (err) {
-			// text = "Failed due to: " + err;
-			// } else {
-			// if (response instanceof Array) {
-			// if (response.length !== 0) {
-			// text = prepare(response);
-			// } else {
-			// text = "No matching data";
-			// }
-			// } else {
-			// text = "Executed, response: " + response;
-			// }
-			// }
-			// tbody.append("<tr><td>Query response: </td></tr><tr><td>" + text
-			// + "</td></tr>");
-			// }
 			that.putBtn.click(onExecute).button('toggle');
 		};
 		this.putBtn.click(onExecute);
@@ -118,12 +99,25 @@ KadOHui.Control.prototype = {
 		var that = this;
 		var statisticHolder = this.query.statisticHolder;
 		var statbody = this.statResult.find('statbody');
-		var update = function() {
-			// statbody.remove(statbody.selector);
-			var text = "<p>Running: " + statisticHolder.numberOfQueries + " Avr. Performance: "
-					+ statisticHolder.averageRunningTime() + "</p>";
+		var emiter = new emiterBuilder.EventEmitter();
+
+		emiter.on("RUNNING_QUERIES", function(data) {
+			var text = "<p>Running: " + data + "</p>";
 			statbody.append(text);
-		};
-		statisticHolder.addListener(update);
+		});
+		emiter.on("PERFORMANCE", function(data) {
+			var text = "<p>Avr. Performance: " + data + "</p>";
+			statbody.append(text);
+		});
+		emiter.on("LOG_FINE", function(data) {
+			var text = "<p>Fine log: " + data + "</p>";
+			statbody.append(text);
+		});
+		emiter.on("LOG_FINER", function(data) {
+			var text = "<p>Finer log: " + data + "</p>";
+			statbody.append(text);
+		});
+
+		statisticHolder.addListener(emiter);
 	}
 };
