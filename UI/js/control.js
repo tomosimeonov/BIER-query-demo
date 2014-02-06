@@ -9,13 +9,13 @@ KadOHui.Control = function(node) {
 	this.clearLogBtn = $("#clear_btn").button();
 	this.putBtn = $("#put_btn").button();
 	this.sqlCode = $("#sql_code");
-	this.putResult = $("#put_result");
-
-	this.statResult = $("#stat_result");
-
+	this.result = $("#result");
+	
+	this.queryInSystem = $("#query_table");
+	
 	this.query = new BIERQuery.QueryLayerBuilder.QueryLayer(BIERstorage);
 
-	this.initExecutor().initLogMonitor();
+	this.initExecutor();
 };
 
 KadOHui.Control.prototype = {
@@ -28,9 +28,9 @@ KadOHui.Control.prototype = {
 			}
 			return queryId.substring(start, queryId.length);
 		};
-		
+
 		var prepare = function(data) {
-			var table = "<table>";
+			var table = "<table class=\"table table-condensed\">";
 			if (data[0] !== undefined) {
 				table = table + "<tr>";
 				for ( var key in data[0]) {
@@ -53,8 +53,26 @@ KadOHui.Control.prototype = {
 			return table;
 		};
 
+		var prepareData = function(query, data) {
+			var html = [ '<tr class="active">', '<td class="span4">', query, '</td>', '<td class="span10">', data,
+					'</td>', '</tr>' ].join('\n');
+			return $(html);
+		}
+		
+		var newQueryInSystem = function(queryId){
+			var html = ['<tr class="danger">', '<td class="span4">', queryId, '</td>', '<td class="span8" id="'+ queryId + '-value">', 'Executing',
+						'</td>', '</tr>' ].join('\n');
+			
+			return $(html);
+		};
+		
+		var queryEnd = function(queryId) {
+			var value = $("#" + queryId + "-value");
+			value.replaceWith(['<td class="span8">','Finished','</td>'].join('\n'));			
+		};
+
 		var that = this;
-		var tbody = this.putResult.find('tbody');
+
 		var onExecute = function() {
 			var today = new Date().getTime();
 			var emiter = new emiterBuilder.EventEmitter();
@@ -62,42 +80,32 @@ KadOHui.Control.prototype = {
 			that.putBtn.unbind('click', onExecute).button('toggle');
 			var sql = that.sqlCode.val();
 
-			var success = function(success) {
-				// TODO make it work for success
-				tbody.append("<tr ><td  class=\"span3\" >Query " + today + " response: </td><td>" + success + "</td></tr>");
-			};
-
-			
-			emiter.on("EXECUTING", function(id){
+			emiter.on("EXECUTING", function(id) {
 				today = trimQueryId(id);
-				tbody.append("<tr><td class=\"span3\" colspan = \"2\">Executing Query " + today + "</td></tr>");
+				that.queryInSystem.append(newQueryInSystem(today));
 			});
-			
+
 			emiter.on("DATA", function(data) {
 				// TODO Make it work for data
-				tbody.append("<tr><td class=\"span3\">Query " + today + " response: </td><td>" + prepare(data) + "</td></tr>");
+				that.result.append(prepareData("Query " + today + " response:", prepare(data)));
 			});
 
 			emiter.on("FINISHED", function() {
-				tbody.append("<tr><td class=\"span3\">Query " + today + " response: </td><td>Finished</td></tr>");
+				queryEnd(today);
 			});
 
 			emiter.on("ERROR", function(err) {
-				// TODO make it work for err
-				tbody.append("<tr><td class=\"span3\" >Query " + today + " response: </td><td>" + err + "</td></tr>");
+				that.result.append(prepareData("Query " + today + " response:", err));
 			});
 
-			emiter.on("SUCCESS", success);
+			emiter.on("SUCCESS",function(success) {
+				that.result.append(prepareData("Query " + today + " response:", success));
+			});
+			
 			that.query.executeSQL(sql, emiter);
 			that.putBtn.click(onExecute).button('toggle');
 		};
 		this.putBtn.click(onExecute);
 		return this;
-	},
-	initLogMonitor : function() {
-		var that = this;
-
-
-		
 	}
 };

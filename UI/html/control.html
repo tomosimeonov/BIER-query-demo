@@ -1,52 +1,49 @@
 <div class="active tab-pane" id="control">
-  <div class="row">
-    <div class="span12">
-      <h2>Control panel</h2>
-    </div>
-  </div>
-  <div class="row">
-    <div class="span10 columns">
-      
-      <p>Connected your browser by clicking the <code>Connect</code> button</p>
-      <p>After that, feel free to post and retrieve data from the BIER and to take a look at all the different panels to see what is happening behind the scene.</p>
-    </div>
-  </div>
-
-  <div class="row columns">
-    <div class="span6">
-      <h3>Run SQL</h3>
-      <p>Run an SQL statement against the database</p>
-      <div class="well">
-        <div class="control-group">
-          <textarea id="sql_code" name="put_value" placeholder="SQL" class="span5" rows="6"></textarea>
-        </div>
-        <button id="put_btn" class="btn">Execute</button> 
-      </div>   
-    </div>
-    <div class="span6">
-      <h3>Log</h3>
-      <p>Query Logging information</p>
-       <div id="stat_result" class="well">
-       	<div style="height: 125px;overflow: auto;">
-          	<statbody></statbody>      
-        </div>
-         <button id="clear_btn" class="btn">Clear Log</button> 
-      </div>
-    </div> 
-  </div>
-
 	<div class="row">
-		<div class="span12 columns">
-    	 <div id="put_result" style="height: 250px;overflow: auto;">
-        	<table class="table table-condensed table-bordered table-striped">
-         	 <thead>
-           	 <tr>
-            	  <th>Result</th>
-           	 </tr>
-         	 </thead>
-         	<tbody></tbody>
-           </table>
-      </div>
-    </div>
+		<div class="span12">
+			<h2>Control panel</h2>
+		</div>
 	</div>
- </div>
+	<div class="row">
+		<div class="span10 columns">
+
+			<p>
+				Connected your browser by clicking the
+				<code>Connect</code>
+				button. After that, feel free to post and retrieve data from the
+				BIER and to take a look at all the different panels to see what is
+				happening behind the scene.
+			</p>
+		</div>
+	</div>
+
+	<div class="row columns">
+		<div class="span6">
+			<h3>Run SQL</h3>
+			<div class="well">
+				<div class="control-group">
+					<textarea id="sql_code" name="put_value" placeholder="SQL"
+						class="span5" rows="6"></textarea>
+				</div>
+				<button id="put_btn" class="btn">Execute</button>
+			</div>
+		</div>
+		<div class="span6">
+			<h3>Queries in the system</h3>
+			<div id="stat_result" class="well">
+				<div style="height: 150px; overflow: auto;">
+					<table class="table table-hover table-condensed" id="query_table">
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="row console span11" style="height: 250px; overflow: auto;">
+		<table class="table table-hover">
+			<tbody id="result">
+
+			</tbody>
+		</table>
+	</div>
+</div>
