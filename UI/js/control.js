@@ -6,21 +6,10 @@ KadOHui.Control = function(node) {
 	this.node = node;
 	this.control = $("#control");
 
+	this.clearLogBtn = $("#clear_btn").button();
 	this.putBtn = $("#put_btn").button();
-	this.putNamespace = $("#put_namespace");
-	this.putKey = $("#put_key");
 	this.sqlCode = $("#sql_code");
 	this.putResult = $("#put_result");
-
-	this.getBtn = $("#get_btn").button();
-	this.getKey = $("#get_key");
-	this.getNamespace = $("#get_namespace");
-	this.getResult = $("#get_result");
-
-	this.messageBtn = $('#message_btn').button();
-	this.messageID = $('#message_id');
-	this.messageValue = $('#message_value');
-	this.messageResult = $('#message_result');
 
 	this.statResult = $("#stat_result");
 
@@ -32,7 +21,7 @@ KadOHui.Control = function(node) {
 KadOHui.Control.prototype = {
 	initExecutor : function() {
 		var prepare = function(data) {
-			var table = "";
+			var table = "<table>";
 			if (data[0] !== undefined) {
 				table = table + "<tr>";
 				for ( var key in data[0]) {
@@ -50,7 +39,7 @@ KadOHui.Control.prototype = {
 					}
 
 				}
-				table = table + "</tr>";
+				table = table + "</tr></table";
 			});
 			return table;
 		};
@@ -62,32 +51,30 @@ KadOHui.Control.prototype = {
 			var emiter = new emiterBuilder.EventEmitter();
 
 			that.putBtn.unbind('click', onExecute).button('toggle');
-			var namespace = that.putNamespace.val();
-			var key = that.putKey.val();
 			var sql = that.sqlCode.val();
 
 			var success = function(success) {
 				// TODO make it work for success
-				tbody.append("<tr><td>Query " + today + " response: </td><td>" + success + "</td></tr>");
+				tbody.append("<tr ><td  class=\"span3\" >Query " + today + " response: </td><td>" + success + "</td></tr>");
 			};
 
 			emiter.on("DATA", function(data) {
 				// TODO Make it work for data
-				tbody.append("<tr><td>Query " + today + " response: </td></tr>" + prepare(data));
+				tbody.append("<tr><td class=\"span3\">Query " + today + " response: </td><td>" + prepare(data) + "</td></tr>");
 			});
 
 			emiter.on("FINISHED", function() {
-				tbody.append("<tr><td>Query " + today + " response: </td><td>Finished</td></tr>");
+				tbody.append("<tr><td class=\"span3\">Query " + today + " response: </td><td>Finished</td></tr>");
 			});
 
 			emiter.on("ERROR", function(err) {
 				// TODO make it work for err
-				tbody.append("<tr><td>Query " + today + " response: </td><td>" + err + "</td></tr>");
+				tbody.append("<tr><td class=\"span3\" >Query " + today + " response: </td><td>" + err + "</td></tr>");
 			});
 
 			emiter.on("SUCCESS", success);
 
-			tbody.append("<tr><td>Executing Query " + today + "</td></tr>");
+			tbody.append("<tr><td class=\"span3\" colspan = \"2\">Executing Query " + today + "</td></tr>");
 
 			that.query.executeSQL(sql, emiter);
 			that.putBtn.click(onExecute).button('toggle');
@@ -114,5 +101,12 @@ KadOHui.Control.prototype = {
 		});
 
 		eventHolder.addListener(emiter);
+
+		var onExecute = function() {
+			that.clearLogBtn.unbind('click', onExecute).button('toggle');
+			statbody.empty();
+			that.clearLogBtn.click(onExecute).button('toggle');
+		};
+		this.clearLogBtn.click(onExecute);
 	}
 };
