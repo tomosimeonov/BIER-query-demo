@@ -18,12 +18,12 @@ function onConnect(that) {
 	KadOH.log.subscribeTo(node._reactor._transport, 'Transport');
 	KadOH.log.subscribeTo(node._routingTable, 'RoutingTable');
 
-	new KadOHui.Control(node);
+	var Control = new KadOHui.Control(node);
 	new KadOHui.Node(node, '#node');
 	new KadOHui.Reactor(node._reactor, '#reactor .received', '#reactor .sent', '#reactor .connection_state');
 	new KadOHui.Routing(node._routingTable, '#routing-table');
 	new KadOHui.Transport(node._reactor._transport, '#transport>pre');
-	new KadOHui.Logger(KadOH.log, '#log .console', '#log .control');
+	new KadOHui.Logger(KadOH.log, '#log .console', '#log .control',Control.query.eventHolder);
 	new KadOHui.ValueM(node._store, '#value-management');
 	$('#info').html('<h3>' + node.getAddress() + ' / <small>' + node.getID() + '</small></h3>');
 	that.button('complete').button('toggle');

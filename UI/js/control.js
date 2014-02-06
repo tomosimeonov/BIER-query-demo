@@ -20,6 +20,15 @@ KadOHui.Control = function(node) {
 
 KadOHui.Control.prototype = {
 	initExecutor : function() {
+		// Helper method to trip a queryId
+		var trimQueryId = function(queryId) {
+			var start = 0;
+			if (queryId.length > 10) {
+				start = queryId.length - 10;
+			}
+			return queryId.substring(start, queryId.length);
+		};
+		
 		var prepare = function(data) {
 			var table = "<table>";
 			if (data[0] !== undefined) {
@@ -58,6 +67,12 @@ KadOHui.Control.prototype = {
 				tbody.append("<tr ><td  class=\"span3\" >Query " + today + " response: </td><td>" + success + "</td></tr>");
 			};
 
+			
+			emiter.on("EXECUTING", function(id){
+				today = trimQueryId(id);
+				tbody.append("<tr><td class=\"span3\" colspan = \"2\">Executing Query " + today + "</td></tr>");
+			});
+			
 			emiter.on("DATA", function(data) {
 				// TODO Make it work for data
 				tbody.append("<tr><td class=\"span3\">Query " + today + " response: </td><td>" + prepare(data) + "</td></tr>");
@@ -73,9 +88,6 @@ KadOHui.Control.prototype = {
 			});
 
 			emiter.on("SUCCESS", success);
-
-			tbody.append("<tr><td class=\"span3\" colspan = \"2\">Executing Query " + today + "</td></tr>");
-
 			that.query.executeSQL(sql, emiter);
 			that.putBtn.click(onExecute).button('toggle');
 		};
@@ -84,29 +96,8 @@ KadOHui.Control.prototype = {
 	},
 	initLogMonitor : function() {
 		var that = this;
-		var eventHolder = this.query.eventHolder;
-		var statbody = this.statResult.find('statbody');
-		var emiter = new emiterBuilder.EventEmitter();
-		emiter.on("LOG_INFO", function(data) {
-			var text = "<p>[INFO LOG]: " + data + "</p>";
-			statbody.append(text);
-		});
-		emiter.on("LOG_FINE", function(data) {
-			var text = "<p>[FINE LOG]: " + data + "</p>";
-			statbody.append(text);
-		});
-		emiter.on("LOG_FINER", function(data) {
-			var text = "<p>[FINER LOG]: " + data + "</p>";
-			statbody.append(text);
-		});
 
-		eventHolder.addListener(emiter);
 
-		var onExecute = function() {
-			that.clearLogBtn.unbind('click', onExecute).button('toggle');
-			statbody.empty();
-			that.clearLogBtn.click(onExecute).button('toggle');
-		};
-		this.clearLogBtn.click(onExecute);
+		
 	}
 };

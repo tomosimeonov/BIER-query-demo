@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>KadOH</title>
+  <title>BIER-query</title>
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -47,12 +47,12 @@ function onConnect(that) {
 	KadOH.log.subscribeTo(node._reactor._transport, 'Transport');
 	KadOH.log.subscribeTo(node._routingTable, 'RoutingTable');
 
-	new KadOHui.Control(node);
+	var Control = new KadOHui.Control(node);
 	new KadOHui.Node(node, '#node');
 	new KadOHui.Reactor(node._reactor, '#reactor .received', '#reactor .sent', '#reactor .connection_state');
 	new KadOHui.Routing(node._routingTable, '#routing-table');
 	new KadOHui.Transport(node._reactor._transport, '#transport>pre');
-	new KadOHui.Logger(KadOH.log, '#log .console', '#log .control');
+	new KadOHui.Logger(KadOH.log, '#log .console', '#log .control',Control.query.eventHolder);
 	new KadOHui.ValueM(node._store, '#value-management');
 	$('#info').html('<h3>' + node.getAddress() + ' / <small>' + node.getID() + '</small></h3>');
 	that.button('complete').button('toggle');
@@ -82,11 +82,10 @@ $(function() {
   <div class="navbar navbar-fixed-top">
     <div class="navbar-inner">
       <div class="container">
-        <a href="#" class="brand">KadOH</a>
+        <a href="#" class="brand">BIER-query</a>
         <ul class="nav">
           <li class="active"><a href="#">Home</a></li>
-          <li><a href="https://github.com/jinroh/kadoh">Source</a></li>
-          <li><a href="http://jinroh.github.com/kadoh">Documentation</a></li>
+          <li><a href="https://github.com/tomosimeonov/BIER-query">Source</a></li>
         </ul>
         <button type="submit" class="pull-right btn btn-mini" id="connection_btn"
         data-loading-text="Connecting..." data-complete-text="Connected" data-failed-text="Retry ?">
@@ -256,38 +255,17 @@ $(function() {
 </div>
 
           <div class="tab-pane" id="log">
-    <div class="well row colums control">
-      <div class="span1">
-        <strong>Log level</strong>
-      </div>
-      <div class="span2">
-        <img src="UI/img/info-icon16.png" alt="info">
-        <input type="checkbox" name="debugLevel" value="info" checked>
-        <span>info</span>
-      </div>
-      <div class="span2">
-        <img src="UI/img/warn-icon16.png" alt="warning">
-        <input type="checkbox" name="debugLevel" value="warn" checked>
-        <span>warning</span>
-      </div>
-      <div class="span2">
-        <img src="UI/img/error-icon16.png" alt="error">
-        <input type="checkbox" name="debugLevel" value="error" checked>
-        <span>error</span>
-      </div>
-      <div class="span2">
-        <img src="UI/img/skull-icon16.png" alt="fatal">
-        <input type="checkbox" name="debugLevel" value="fatal" checked>
-        <span>fatal</span>
-      </div>
-      <div class="span2">
-        <img src="UI/img/debug-icon16.png" alt="debug">
-        <input type="checkbox" name="debugLevel" value="debug" unchecked>
-        <span>debug</span>
-      </div>
-    </div>
-    <div class="console">
-    </div>
+	<div class="well row colums control">
+		<div class="controls">
+			<strong>Log level</strong> <select class="form-control"
+				id="logSelect">
+				<option value="INFO">Info</option>
+				<option value="FINE">Fine</option>
+				<option value="FINER">Finer</option>
+			</select>
+		</div>
+	</div>
+	<div class="console"></div>
 </div>
 
     </div>
