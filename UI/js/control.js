@@ -26,7 +26,7 @@ KadOHui.Control = function(node) {
 
 	this.query = new BIERQuery.QueryLayerBuilder.QueryLayer(BIERstorage);
 
-	this.initExecutor().initStatisticMonitor();
+	this.initExecutor().initLogMonitor();
 };
 
 KadOHui.Control.prototype = {
@@ -95,29 +95,24 @@ KadOHui.Control.prototype = {
 		this.putBtn.click(onExecute);
 		return this;
 	},
-	initStatisticMonitor : function() {
+	initLogMonitor : function() {
 		var that = this;
-		var statisticHolder = this.query.statisticHolder;
+		var eventHolder = this.query.eventHolder;
 		var statbody = this.statResult.find('statbody');
 		var emiter = new emiterBuilder.EventEmitter();
-
-		emiter.on("RUNNING_QUERIES", function(data) {
-			var text = "<p>Running: " + data + "</p>";
-			statbody.append(text);
-		});
-		emiter.on("PERFORMANCE", function(data) {
-			var text = "<p>Avr. Performance: " + data + "</p>";
+		emiter.on("LOG_INFO", function(data) {
+			var text = "<p>[INFO LOG]: " + data + "</p>";
 			statbody.append(text);
 		});
 		emiter.on("LOG_FINE", function(data) {
-			var text = "<p>Fine log: " + data + "</p>";
+			var text = "<p>[FINE LOG]: " + data + "</p>";
 			statbody.append(text);
 		});
 		emiter.on("LOG_FINER", function(data) {
-			var text = "<p>Finer log: " + data + "</p>";
+			var text = "<p>[FINER LOG]: " + data + "</p>";
 			statbody.append(text);
 		});
 
-		statisticHolder.addListener(emiter);
+		eventHolder.addListener(emiter);
 	}
 };
