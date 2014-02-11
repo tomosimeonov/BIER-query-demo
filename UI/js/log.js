@@ -7,11 +7,9 @@ KadOHui.Logger = function(logemitter, console_element, control_element, eventHol
 	this.control = $(control_element);
 
 	this.MAX = 700;
-
-	// logemitter.onAny(function(level, log) {
-	// this.append(log.ns, level, this._unshiftEvent(log.event, log.args));
-	// }, this);
-
+	
+	this.eventHolder.setFinerLogLevel();
+	
 	var tconsole = this.console;
 	var chLogLevel = function(e) {
 		var value = $(e.target).val();
@@ -64,7 +62,7 @@ KadOHui.Logger.prototype = {
 
 		var html = [
 				'<div class="row ' + level + '">',
-				'<div class="span1">',
+				'<div class="span2">',
 				queryId,
 				'</div>',
 				'<div class="span1">',

@@ -23,8 +23,8 @@ KadOHui.Control.prototype = {
 		// Helper method to trip a queryId
 		var trimQueryId = function(queryId) {
 			var start = 0;
-			if (queryId.length > 10) {
-				start = queryId.length - 10;
+			if (queryId.length > 20) {
+				start = queryId.length - 20;
 			}
 			return queryId.substring(start, queryId.length);
 		};
@@ -54,13 +54,13 @@ KadOHui.Control.prototype = {
 		};
 
 		var prepareData = function(query, data) {
-			var html = [ '<tr class="active">', '<td class="span4">', query, '</td>', '<td class="span10">', data,
+			var html = [ '<tr>', '<td class="span4">', query, '</td>', '<td class="span10">', data,
 					'</td>', '</tr>' ].join('\n');
 			return $(html);
 		}
 		
 		var newQueryInSystem = function(queryId){
-			var html = ['<tr class="danger">', '<td class="span4">', queryId, '</td>', '<td class="span8" id="'+ queryId + '-value">', 'Executing',
+			var html = ['<tr>', '<td class="span4">','<strong>', queryId,'</strong>','</td>', '<td class="span8" id="'+ queryId + '-value" style="color:green;">', 'Executing',
 						'</td>', '</tr>' ].join('\n');
 			
 			return $(html);
@@ -68,38 +68,45 @@ KadOHui.Control.prototype = {
 		
 		var queryEnd = function(queryId) {
 			var value = $("#" + queryId + "-value");
-			value.replaceWith(['<td class="span8">','Finished','</td>'].join('\n'));			
+			value.replaceWith(['<td class="span8" style="color:blue;">','Finished','</td>'].join('\n'));			
+		};
+		
+		var errorInQuery = function(queryId) {
+			var value = $("#" + queryId + "-value");
+			value.replaceWith(['<td class="span8" style="color:red;">','Error','</td>'].join('\n'));			
 		};
 
 		var that = this;
 
 		var onExecute = function() {
-			var today = new Date().getTime();
+			var id = new Date().getTime();
 			var emiter = new emiterBuilder.EventEmitter();
 
 			that.putBtn.unbind('click', onExecute).button('toggle');
 			var sql = that.sqlCode.val();
 
-			emiter.on("EXECUTING", function(id) {
-				today = trimQueryId(id);
-				that.queryInSystem.append(newQueryInSystem(today));
+			emiter.on("EXECUTING", function(idl) {
+				id = trimQueryId(idl);
+				that.queryInSystem.append(newQueryInSystem(id));
 			});
 
 			emiter.on("DATA", function(data) {
 				// TODO Make it work for data
-				that.result.append(prepareData("Query " + today + " response:", prepare(data)));
+				that.result.append(prepareData("Query " + id + " response:", prepare(data)));
 			});
 
 			emiter.on("FINISHED", function() {
-				queryEnd(today);
+				queryEnd(id);
 			});
 
 			emiter.on("ERROR", function(err) {
-				that.result.append(prepareData("Query " + today + " response:", err));
+				console.log(id)
+				errorInQuery(id);
+				that.result.append(prepareData("Query " + id + " response:", err));
 			});
 
 			emiter.on("SUCCESS",function(success) {
-				that.result.append(prepareData("Query " + today + " response:", success));
+				that.result.append(prepareData("Query " + id + " response:", success));
 			});
 			
 			that.query.executeSQL(sql, emiter);
