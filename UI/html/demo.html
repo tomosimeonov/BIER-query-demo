@@ -1,0 +1,60 @@
+<div class="tab-pane" id="demo">
+	<div>
+		<form class="form-horizontal span8">
+			<fieldset>
+				<legend>Bulk insert of demo data</legend>
+				<div class="control-group">
+					<label class="control-label">Namespace</label>
+					<div class="controls">
+						<input class="form-control" id="demo_namespace"
+							placeholder="Enter Namespace">
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label">Primary id</label>
+					<div class="controls">
+						<input class="form-control" id="demo_id"
+							placeholder="Enter Primary id">
+					</div>
+				</div>
+
+				<div class="control-group">
+					<label class="control-label">Start index</label>
+					<div class="controls">
+						<input type="number" class="form-control" id="demo_start_index"
+							placeholder="Enter start index">
+					</div>
+				</div>
+
+				<div class="control-group">
+					<label class="control-label">Number of tuples</label>
+					<div class="controls">
+						<input type="number" class="form-control" id="demo_size" value=""
+							placeholder="Enter Number of tuples">
+					</div>
+				</div>
+
+				<div class="control-group">
+					<label class="control-label">Additional columns</label>
+					<div class="controls" data-toggle="buttons-checkbox">
+						<label class="btn btn-default" id="name"> Name </label> <label
+							class="btn btn-default " id="surname"> Surname </label><label
+							class="btn btn-default" id="age"> Age </label> <label
+							class="btn btn-default" id="address"> Address </label><label
+							class="btn btn-default" id="country"> Country </label> <label
+							class="btn btn-default" id="date"> Date </label>
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label" for="optionsCheckbox">Insert
+						into database</label>
+					<div class="controls">
+						<button type="submit" class="btn btn-primary" id="submit_populate">Go</button>
+					</div>
+				</div>
+
+			</fieldset>
+		</form>
+	</div>
+
+</div>

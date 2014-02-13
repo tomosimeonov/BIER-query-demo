@@ -3,7 +3,7 @@
 
   "KadOH-lib" : "KadOH.js?debug=true",
 
-  "tabs": ["Control", "Node", "Reactor", "Transport", "Routing Table", "Value Management", "Log"],
+  "tabs": ["Control", "Demo","Node", "Reactor", "Transport", "Routing Table", "Value Management", "Log"],
 
   "tabs-ressources": {
     "Control": {
@@ -11,6 +11,11 @@
       "js"   : "../UI/js/control.js",
       "html" : "html/control.html"
     },
+    "Demo": {
+        "href" : "demo",
+        "js"   : "../UI/js/demo.js",
+        "html" : "html/demo.html"
+      },
     "Node": {
       "href" : "node",
       "js"   : "../UI/js/node.js",

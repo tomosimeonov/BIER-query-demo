@@ -1,5 +1,5 @@
 var config = {
-	bootstraps : [ "127.0.0.1:3000", "127.0.0.1:3001", "127.0.0.1:3002" ],
+	bootstraps : [ "192.168.4.147:3000", "192.168.4.147:3001", "192.168.4.147:3002" ],
 	reactor : {
 		protocol : 'jsonrpc2',
 		type : 'SimUDP',
@@ -25,6 +25,7 @@ function onConnect(that) {
 	new KadOHui.Transport(node._reactor._transport, '#transport>pre');
 	new KadOHui.Logger(KadOH.log, '#log .console', '#log .control',Control.query.eventHolder);
 	new KadOHui.ValueM(node._store, '#value-management');
+	new KadOHui.Demo(Control.query);
 	$('#info').html('<h3>' + node.getAddress() + ' / <small>' + node.getID() + '</small></h3>');
 	that.button('complete').button('toggle');
 }

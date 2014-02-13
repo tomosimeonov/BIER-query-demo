@@ -100,7 +100,6 @@ KadOHui.Control.prototype = {
 			});
 
 			emiter.on("ERROR", function(err) {
-				console.log(id)
 				errorInQuery(id);
 				that.result.append(prepareData("Query " + id + " response:", err));
 			});
