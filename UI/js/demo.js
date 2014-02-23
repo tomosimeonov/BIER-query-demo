@@ -88,13 +88,56 @@ KadOHui.Demo.prototype = {
 			return buildInsertSQL(namespace, prepareColumns(primaryKey, Object.keys(array)), preparaValues(
 					primaryKeyValue, array));
 		};
-		var insertInDatabase = function(sql, queryL, emiter) {
-			queryL.executeSQL(sql, emiter);
+
+		var insertInDatabase = function(namespace, key, data) {
+			BIERstorage.Node.put(namespace, key, data, 2, function(data) {
+			});
+
+		};
+
+		var createObject = function(primaryId, value) {
+			var result = {};
+			result[primaryId] = value;
+
+			if (that.name.hasClass('active')) {
+				result['Name'] = that.names[randomNumberUpToFive()];
+			}
+
+			if (that.surname.hasClass('active')) {
+				result['Surname'] = that.surnames[randomNumberUpToFive()];
+			}
+
+			if (that.age.hasClass('active')) {
+				result['Age'] = that.ages[randomNumberUpToFive()];
+			}
+
+			if (that.country.hasClass('active')) {
+				result['Country'] = that.countries[randomNumberUpToFive()];
+			}
+
+			if (that.date.hasClass('active')) {
+				result['Date'] = that.date[randomNumberUpToFive()];
+			}
+
+			if (that.address.hasClass('active')) {
+				result['Address'] = that.addresses[randomNumberUpToFive()];
+			}
+
+			return result;
+		};
+
+		var spawn = function(start, end) {
+			for (var i = start; i < end; i++) {
+				var data = createObject(that.primaryId.val(), i);
+				insertInDatabase(that.namespace.val(), i, data);
+			}
+			
+
 		};
 
 		var onExecute = function() {
-			if (!checkData()) {
-				alert("All fields should be setted.");
+			if (!checkData() || parseInt(that.size.val()) > 101) {
+				alert("All fields should be setted and size no more than 100.");
 			} else {
 
 				var currentId = parseInt(that.startKey.val());
@@ -119,11 +162,10 @@ KadOHui.Demo.prototype = {
 					if (processed == size)
 						alert("Finished")
 				});
-				for (var i = currentId; i < size; i++) {
-					var sql = createSql(that.namespace.val(), that.primaryId.val(), i);
-					insertInDatabase(sql, that.bierQuery, emiter)
-				}
-				;
+				var allR = Math.round(size / 100);
+				var currentSize = currentId + size;
+				spawn(currentId,size);
+				
 			}
 		};
 		this.submit.click(onExecute);
