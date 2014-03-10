@@ -2,7 +2,7 @@ var http = require('http');
 var udp = require('dgram');
 var sio = require('socket.io');
 
-var SERVER_EXT_ADDR = "192.168.4.147";
+var SERVER_EXT_ADDR = "192.168.4.148";
 var PORT_AVAIBILITY = {
   5000 : true,
   5001 : true,

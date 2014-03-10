@@ -92,6 +92,7 @@ KadOHui.Control.prototype = {
 
 			emiter.on("DATA", function(data) {
 				// TODO Make it work for data
+				console.log(id + " "+ data.length)
 				that.result.append(prepareData("Query " + id + " response:", prepare(data)));
 			});
 
